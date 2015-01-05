@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<title>Portal demo</title>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../bower_components/jquery-ui/themes/ui-lightness/jquery-ui.min.css">
+<script src="../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="../bower_components/jquery-ui/jquery-ui.min.js"></script>
+<script src="../bower_components/angular.min.js"></script>
+<script src="../bower_components/angular-ui-sortable/sortable.min.js"></script>
+<script src="../bower_components/underscore/underscore-min.js"></script>
+<!-- Demo css -->
+<style>
+	.portal {
+		border: 2px solid silver;
+	}
+	.portal.editor {
+		border-style: dashed;
+	}
+</style>
+<!-- Demo script -->
+<script>
+	angular.module('demo', ['battlesnake.portal'])
+		.controller('demo', demoController);
+
+	function demoController($scope) {
+		$scope.widgets = [
+			{ column: 0, html: '<p>Hello</p>' },
+			{ column: 1, html: '<p>World</p>' },
+		];
+	}
+</script>
+</head>
+<body ng-app="demo">
+	<h1>Portal demo</h1>
+	<!-- Editor as editors would see -->
+	<portal ng-controller="demo" x-columns="3" x-widgets="widgets" x-editor>
+	</portal>
+	<hr>
+	<!-- Portal as clients would see -->
+	<portal ng-controller="demo" x-columns="3" x-widgets="widgets" editor>
+	</portal>
+	<!-- TODO: Callback so directive/portalController can notify external -->
+	<!-- controller when things change...  Some demo widgets -->
+	<!-- Also add module in Github for this, don't commit it as Wheatley -->
+</body>
+</html>
