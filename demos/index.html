@@ -19,27 +19,38 @@
 	.portal {
 		border: 2px solid silver;
 		padding: 10px;
-		background: red;
+		display: block;
 	}
 	.portal.editor {
 		border-style: dashed;
-		background: yellow;
 	}
 	.portal-columns {
-		display: flex;
-		flex-flow: row wrap;
-		justify-content: center;
-		align-items: flex-start;
-		background: green;
+		display: block;
 	}
 	.portal-column {
-		flex-basis: 300px;
-		flex-shrink: 1;
-		flex-grow: 0;
-		background: blue;
+		vertical-align: top;
+		display: inline-block;
+		margin: 10px;
+		border: 1px solid silver;
+		width: 320px;
+	}
+	.portal.editor .portal-column {
+		border-style: dashed;
+	}
+	.widget-container {
+		display: inline-block;
+		width: 100%;
+		padding: 10px;
 	}
 	.widget {
-		background: fuchsia;
+		display: block;
+		position: relative;
+		background: white;
+		border: 1px solid black;
+		width: 300px;
+	}
+	.portal-column .widget-container {
+		display: block;
 	}
 </style>
 <!-- Demo script -->
@@ -54,6 +65,11 @@
 		$scope.widgets = [
 			{ column: 0, html: '<p>Hello</p>' },
 			{ column: 1, html: '<p>World</p>' },
+			{ column: 0, html: '<i>Col #0:0</i>' },
+			{ column: 0, html: '<i>Col #0:1</i>' },
+			{ column: 2, html: '<i>Col #2:0</i>' },
+			{ column: 0, html: '<i>Col #0:2</i>' },
+			{ column: 2, html: '<i>Col #2:1</i>' }
 		];
 	}
 
