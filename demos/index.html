@@ -4,88 +4,279 @@
 <title>Portal demo</title>
 <meta charset="utf-8">
 <link rel="stylesheet" href="../bower_components/jquery-ui/themes/ui-lightness/jquery-ui.min.css">
+<link rel="stylesheet" href="../bower_components/fontawesome/css/font-awesome.min.css">
 <script src="../bower_components/jquery/dist/jquery.min.js"></script>
 <script src="../bower_components/jquery-ui/jquery-ui.min.js"></script>
 <script src="../bower_components/angular/angular.min.js"></script>
 <script src="../bower_components/angular-ui-sortable/sortable.min.js"></script>
-<script src="../bower_components/underscore/underscore-min.js"></script>
 <!-- Module -->
+<link rel="stylesheet" href="../style.css">
 <script src="../module.js"></script>
-<script src="../portal-controller.js"></script>
+<script src="../portal-template.js"></script>
 <script src="../portal-directive.js"></script>
+<script src="../widget-template.js"></script>
 <script src="../widget-directive.js"></script>
 <!-- Demo css -->
 <style>
+	body {
+		font-family: sans-serif;
+		font-size: 12pt;
+	}
+	h1 {
+		font-size: 18pt;
+	}
+	h2 {
+		font-size: 14pt;
+	}
+	input {
+		margin: 4px;
+	}
+	label {
+		font-size: 10pt;
+	}
+	.fa {
+		font-family: FontAwesome;
+	}
+	.editor-control {
+		margin-bottom: 8px;
+	}
 	.portal {
-		border: 2px solid silver;
+		display: flex;
+		flex-flow: row wrap;
+		align-items: flex-start;
+		justify-content: stretch;
 		padding: 10px;
-		display: block;
 	}
-	.portal.editor {
-		border-style: dashed;
-	}
-	.portal-columns {
-		display: block;
-	}
-	.portal-column {
-		vertical-align: top;
-		display: inline-block;
+	.portal-area {
 		margin: 10px;
-		border: 1px solid silver;
-		width: 320px;
+		min-height: 40px;
 	}
-	.portal.editor .portal-column {
-		border-style: dashed;
-	}
-	.widget-container {
-		display: inline-block;
-		width: 100%;
-		padding: 10px;
-	}
-	.widget {
-		display: block;
+	.portal-area.header {
+		flex: 1 0 95%;
 		position: relative;
-		background: white;
-		border: 1px solid black;
-		width: 300px;
+		right: 0;
+		left: 0;
 	}
-	.portal-column .widget-container {
-		display: block;
+	.portal-area.main {
+		flex: 1 0 600px;
+	}
+	.portal-area.sidebar {
+		max-width: 200px;
+		flex: 0 1 200px;
+	}
+	.widget-container,
+	.portal-placeholder {
+		border-radius: 5px;
+		padding: 5px;
+		background: skyblue;
+		margin: 10px;
+	}
+	.portal-placeholder {
+		border: 2px dashed silver;
+		background: white;
+		height: 40px;
+	}
+	.widget-edit-overlay {
+		background-color: rgba(165,219,252, 0.6); /* skyblue/white */
 	}
 </style>
 <!-- Demo script -->
 <script>
-(function (angular) {
+(function (angular, $) {
 	'use strict';
 
 	angular.module('demo', ['battlesnake.portal'])
-		.controller('demo', demoController);
+		.controller('demo', demoController)
+		.factory('confirmRemovalDialog', confirmRemovalDialog)
+		.factory('newItemDialog', newItemDialog)
+		;
 
-	function demoController($scope) {
-		$scope.widgets = [
-			{ column: 0, html: '<p>Hello</p>' },
-			{ column: 1, html: '<p>World</p>' },
-			{ column: 0, html: '<i>Col #0:0</i>' },
-			{ column: 0, html: '<i>Col #0:1</i>' },
-			{ column: 2, html: '<i>Col #2:0</i>' },
-			{ column: 0, html: '<i>Col #0:2</i>' },
-			{ column: 2, html: '<i>Col #2:1</i>' }
+	function demoController($scope, confirmRemovalDialog, newItemDialog) {
+		$scope.areas = [
+			{
+				'class': 'header',
+				name: 'Header',
+				widgets: [
+					{ html: '<span>Title</span>' },
+					{ html: '<span>Actions logged here</span>' }
+				]
+			},
+			{
+				'class': 'main',
+				name: 'Main',
+				widgets: [
+					{ html: '<span>Hello</span>' }
+				]
+			},
+			{
+				'class': 'sidebar',
+				name: 'Sidebar',
+				widgets: [
+					{ html: '<span>World</span>' },
+					{ html: '<i>Potato</i>' },
+					{ html: '<i>Another potato</i>' }
+				]
+			}
 		];
+		$scope.editing = false;
+		$scope.moving = moving;
+		$scope.changed = changed;
+		$scope.removing = removing;
+		$scope.add = add;
+		$scope.configure = configure;
+		var log = $scope.areas[0].widgets[1];
+		return;
+
+		function moving(widget, source, target) {
+			log.html = '<span>Widget <i>' + (widget === log ? '(log)' : $(widget.html).text()) + '</i> moved from area <i>' + source.name + '</i> to <i>' + target.name + '</i></span>';
+			return true;
+		}
+
+		function changed() {
+			console.info('Changed');
+		}
+
+		function removing(area, widget) {
+			return confirmRemovalDialog.show();
+		}
+
+		function add(area) {
+			newItemDialog.show()
+				.then(function (text) {
+					area.widgets.push({
+						html: '<span>' + text + '</span>'
+					});
+				});
+		}
+
+		function configure(widget) {
+			/* TODO */
+		}
 	}
 
-})(window.angular);
+	function newItemDialog($q, $rootScope) {
+		var deferred;
+		var dialog = $('#newItemDialog');
+		var text = dialog.find('input');
+		dialog.dialog({
+			autoOpen: false,
+			modal: true,
+			buttons: {
+				'Add': function () {
+					var p = deferred;
+					deferred = null;
+					$rootScope.$apply(function () {
+						p.resolve(text.val());
+					});
+					$(this).dialog('close');
+
+				},
+				'Cancel': function () {
+					var p = deferred;
+					deferred = null;
+					$rootScope.$apply(function () {
+						p.reject();
+					});
+					$(this).dialog('close');
+				}
+			}
+		});
+
+		return {
+			show: function () {
+				if (deferred) {
+					deferred.reject();
+				}
+				deferred = $q.defer();
+				text.val('');
+				dialog.dialog('open');
+				return deferred.promise;
+			}
+		};
+	}
+
+	function confirmRemovalDialog($q, $rootScope) {
+		var deferred;
+		var dialog = $('#confirmRemovalDialog');
+		dialog.dialog({
+			autoOpen: false,
+			modal: true,
+			buttons: {
+				'Yes': function () {
+					var p = deferred;
+					deferred = null;
+					$rootScope.$apply(function () {
+						p.resolve(true);
+					});
+					$(this).dialog('close');
+				},
+				'No': function () {
+					var p = deferred;
+					deferred = null;
+					$rootScope.$apply(function () {
+						p.reject();
+					});
+					$(this).dialog('close');
+				}
+			}
+		});
+
+		return {
+			show: function () {
+				if (deferred) {
+					deferred.reject();
+				}
+				deferred = $q.defer();
+				dialog.dialog('open');
+				return deferred.promise;
+			}
+		};
+	}
+
+})(window.angular, window.$);
 </script>
 </head>
-<body ng-app="demo" ng-controller="demo">
+<body ng-app="demo">
+	<!-- jQuery UI dialogs -->
+	<div class="dialogs">
+		<div class="dialog" id="newItemDialog">
+			<label>New item: <input type="text"></label>
+		</div>
+		<div class="dialog" id="confirmRemovalDialog">
+			<span>Are you sure?</span>
+		</div>
+	</div>
+
 	<h1>Portal demo</h1>
-	<!-- Editor as editors would see -->
-	<div portal x-columns="3" x-widgets="widgets" x-editor="true">
+
+	<div ng-controller="demo">
+
+		<h2>Simple editor</h2>
+		<div class="editor-control">
+			<label>
+				<input type="checkbox" ng-model="editing" ng-true-value="true" ng-false-value="false">
+				<span>Allow editing</span>
+			</label>
+		</div>
+		<!-- Editor as editors would see -->
+		<div portal areas="areas"
+			editing="!!editing"
+			onmove="moving(widget, source, target)"
+			onchange="changed()"
+			onremove="removing(area, widget)"
+			onadd="add(area)"
+			onconfigure="configure(widget)"
+			>
+		</div>
+
+		<hr>
+		<h2>Live data binding</h2>
+
+		<!-- Portal as clients would see -->
+		<div portal areas="areas">
+		</div>
+
 	</div>
-	<hr>
-	<!-- Portal as clients would see -->
-	<div portal x-columns="3" x-widgets="widgets">
-	</div>
-	<!-- TODO: Callback so directive/portalController can notify external -->
-	<!-- controller when things change...  Some demo widgets -->
+
 </body>
 </html>

@@ -1,4 +1,4 @@
-(function (angular, _, $) {
+(function (angular) {
 	'use strict';
 
 	angular.module('battlesnake.portal')
@@ -8,31 +8,33 @@
 	 * @ngdoc directive
 	 * @name widget
 	 */
-	function widgetDirective($compile) {
-		/* Auto-increment */
-		var portalId = 0;
-
+	function widgetDirective($compile, widgetTemplate) {
 		return {
-			restrict: 'EA',
-			require: ['^portal'],
+			restrict: 'A',
 			scope: {
-				'widget': '='
+				'widget': '=',
+				'editing': '=',
+				'onconfigure': '&',
+				'onremove': '&'
 			},
-			compile: compile
+			template: widgetTemplate,
+			link: link
 		}
 
-		function compile(element, attrs) {
-			element
-				.addClass('widget-container')
-				.append(angular.element('<div/>')
-					.addClass('widget')
-				);
-			return link;
-		}
+		function link(scope, element, attrs) {
+			scope.configure = configure;
+			scope.remove = remove;
 
-		function link(scope, element, attrs, controllers) {
-			scope.$watch('widget', widgetChanged);
+			scope.$watch('widget', widgetChanged, true);
 			return;
+
+			function configure() {
+				scope.onconfigure({ widget: scope.widget });
+			}
+
+			function remove() {
+				scope.onremove({ widget: scope.widget });
+			}
 
 			function widgetChanged(widget) {
 				var targetElement = element.find('.widget');
@@ -45,4 +47,4 @@
 
 	}
 
-})(window.angular, window._, window.$);
+})(window.angular);

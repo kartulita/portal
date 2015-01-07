@@ -1,0 +1,58 @@
+.portal {
+}
+.portal.editing {
+	outline: 2px dashed blue;
+}
+.portal-area {
+}
+.portal.editing .portal-area {
+	outline: 1px dashed blue;
+}
+.widget-list {
+	list-style: none outside none;
+	padding: 0;
+	/* Ensure that empty lists are still drop-able */
+	min-height: 40px;
+	margin-top: -20px;
+	padding-top: 20px;
+}
+.widget-container {
+}
+.portal-placeholder {
+	border: 2px dashed silver;
+	background: white;
+	height: 40px;
+}
+.widget-container {
+	position: relative;
+}
+.widget {
+}
+.widget-edit-overlay {
+	position: absolute;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(208,208,208, 0.4);
+}
+.widget-edit-buttons {
+	position: absolute;
+	display: inline-block;
+	top: 2px;
+	right: 2px;
+}
+.area-edit-buttons {
+}
+.widget-edit-button,
+.area-edit-button {
+	box-sizing: content-box;
+	width: 16px;
+	height: 16px;
+	padding: 2px;
+	font-size: 16px;
+	line-height: 16px;
+	margin: 0;
+	display: inline-block;
+}
+
