@@ -4,6 +4,7 @@
 	outline: 2px dashed blue;
 }
 .portal-area {
+	overflow: visible;
 }
 .portal.editing .portal-area {
 	outline: 1px dashed blue;
