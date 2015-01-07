@@ -11,6 +11,7 @@
 	 * Portal widget controller
 	 *
 	 * @example
+	 * See demos/simple.html
 	 */
 	angular.module('battlesnake.portal', ['ui.sortable']);
 
