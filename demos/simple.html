@@ -17,66 +17,7 @@
 <script src="../widget-template.js"></script>
 <script src="../widget-directive.js"></script>
 <!-- Demo css -->
-<style>
-	body {
-		font-family: sans-serif;
-		font-size: 12pt;
-	}
-	h1 {
-		font-size: 18pt;
-	}
-	h2 {
-		font-size: 14pt;
-	}
-	input {
-		margin: 4px;
-	}
-	label {
-		font-size: 10pt;
-	}
-	.fa {
-		font-family: FontAwesome;
-	}
-	.editor-control {
-		margin-bottom: 8px;
-	}
-	.portal {
-		display: flex;
-		flex-flow: row wrap;
-		align-items: flex-start;
-		justify-content: stretch;
-		padding: 10px;
-	}
-	.portal-area {
-		margin: 10px;
-		min-height: 40px;
-	}
-	.portal-area.header {
-		flex: 0 0 calc(100% - 20px);
-	}
-	.portal-area.main {
-		flex: 1 0 600px;
-	}
-	.portal-area.sidebar {
-		max-width: 200px;
-		flex: 0 1 200px;
-	}
-	.widget-container,
-	.portal-placeholder {
-		border-radius: 5px;
-		padding: 5px;
-		background: skyblue;
-		margin: 10px;
-	}
-	.portal-placeholder {
-		border: 2px dashed silver;
-		background: white;
-		height: 40px;
-	}
-	.widget-edit-overlay {
-		background-color: rgba(165,219,252, 0.6); /* skyblue/white */
-	}
-</style>
+<link rel="stylesheet" href="style.css">
 <!-- Demo script -->
 <script>
 (function (angular, $) {
@@ -147,10 +88,14 @@
 		}
 
 		function configure(widget) {
-			/* TODO */
+			newItemDialog.show($(widget.html).html())
+				.then(function (text) {
+					widget.html = '<span>' + text + '</span>';
+				});
 		}
 	}
 
+	/* Service to provide text-entry dialog for widget addition */
 	function newItemDialog($q, $rootScope) {
 		var deferred;
 		var dialog = $('#newItemDialog');
@@ -180,18 +125,19 @@
 		});
 
 		return {
-			show: function () {
+			show: function (value) {
 				if (deferred) {
 					deferred.reject();
 				}
 				deferred = $q.defer();
-				text.val('');
+				text.val(value === undefined ? '' : value);
 				dialog.dialog('open');
 				return deferred.promise;
 			}
 		};
 	}
 
+	/* Service to provide confirmation dialog for widget removal */
 	function confirmRemovalDialog($q, $rootScope) {
 		var deferred;
 		var dialog = $('#confirmRemovalDialog');
@@ -234,6 +180,7 @@
 </script>
 </head>
 <body ng-app="demo">
+
 	<!-- jQuery UI dialogs -->
 	<div class="dialogs">
 		<div class="dialog" id="newItemDialog">
@@ -255,7 +202,8 @@
 				<span>Allow editing</span>
 			</label>
 		</div>
-		<!-- Editor as editors would see -->
+
+		<!-- Portal with editing capability -->
 		<div portal areas="areas"
 			editing="!!editing"
 			onmove="moving(widget, source, target)"
@@ -270,8 +218,7 @@
 		<h2>Live data binding</h2>
 
 		<!-- Portal as clients would see -->
-		<div portal areas="areas">
-		</div>
+		<div portal areas="areas"></div>
 
 	</div>
 

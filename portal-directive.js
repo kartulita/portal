@@ -33,10 +33,14 @@
 		}
 
 		function link(scope, element, attrs) {
+			var id = ++portalId;
+			var areaClass = 'portal-' + id + '-area';
+			var areaSelector = '.' + areaClass;
 			scope.configure = configure;
 			scope.remove = remove;
 			scope.add = add;
-			scope.sortableClass = 'portal-' + (++portalId) + '-area';
+			scope.sortableClass = areaClass;
+			/* jQuery UI sortable options */
 			scope.sortableOptions = {
 				'ui-floating': false,
 				cursor: 'move',
@@ -46,7 +50,7 @@
 				items: '>li',
 				tolerance: 'pointer',
 				placeholder: 'portal-placeholder',
-				connectWith: '.' + scope.sortableClass,
+				connectWith: areaSelector,
 				start: dragStart,
 				update: dragUpdate,
 				stop: dragStop
@@ -83,7 +87,7 @@
 				} else {
 					element.removeClass('editing');
 				}
-				element.find('.' + scope.sortableClass).sortable(editing ? 'enable' : 'disable');
+				element.find(areaSelector).sortable(editing ? 'enable' : 'disable');
 			}
 
 			/* Set inner height of placeholder to match height of widget */
@@ -101,13 +105,15 @@
 				var widget = itemScope.widget;
 				var source = itemScope.$parent.area;
 				var target = areaScope.area;
-				if (scope.onmove({ widget: widget, source: source, target: target })) {
+				/* Validate move */
+				if (!scope.onmove() || scope.onmove({ widget: widget, source: source, target: target })) {
 					changed = true;
 				} else {
 					ui.item.sortable.cancel();
 				}
 			}
 
+			/* Trigger change event if needed */
 			function dragStop(event, ui) {
 				if (changed) {
 					scope.onchange({});
