@@ -104,7 +104,7 @@
 			autoOpen: false,
 			modal: true,
 			buttons: {
-				'Add': function () {
+				'Ok': function () {
 					var p = deferred;
 					deferred = null;
 					$rootScope.$apply(function () {
@@ -131,6 +131,7 @@
 				}
 				deferred = $q.defer();
 				text.val(value === undefined ? '' : value);
+				dialog.dialog('option', 'title', value === undefined ? 'Add new portal item' : 'Configure portal item');
 				dialog.dialog('open');
 				return deferred.promise;
 			}
@@ -144,6 +145,7 @@
 		dialog.dialog({
 			autoOpen: false,
 			modal: true,
+			title: 'Remove portal item',
 			buttons: {
 				'Yes': function () {
 					var p = deferred;
