@@ -106,7 +106,7 @@
 				var source = itemScope.$parent.area;
 				var target = areaScope.area;
 				/* Validate move */
-				if (!scope.onmove() || scope.onmove({ widget: widget, source: source, target: target })) {
+				if (scope.onmove({ widget: widget, source: source, target: target })) {
 					changed = true;
 				} else {
 					ui.item.sortable.cancel();
