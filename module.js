@@ -3,9 +3,7 @@
 
 	/**
 	 * @ngdoc module
-	 * @name battlesnake.portal
-	 * @requires angular-ui-sortable
-	 * @requires fontawesome
+	 * @name portal
 	 *
 	 * @description
 	 * Portal widget controller
