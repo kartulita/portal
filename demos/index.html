@@ -9,6 +9,8 @@
 <script src="../bower_components/jquery-ui/jquery-ui.min.js"></script>
 <script src="../bower_components/angular/angular.min.js"></script>
 <script src="../bower_components/angular-ui-sortable/sortable.min.js"></script>
+<!-- AJAX proxy for demos only -->
+<script src="../ajax-proxy/client.js"></script>
 <!-- Module -->
 <link rel="stylesheet" href="../style.css">
 <script src="../module.js"></script>
@@ -23,7 +25,7 @@
 (function (angular, $) {
 	'use strict';
 
-	angular.module('demo', ['battlesnake.portal'])
+	angular.module('demo', ['battlesnake.portal', 'battlesnake.ajax-proxy'])
 		.controller('demo', demoController)
 		.factory('confirmRemovalDialog', confirmRemovalDialog)
 		.factory('newItemDialog', newItemDialog)
