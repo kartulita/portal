@@ -8,12 +8,14 @@
 	 * @ngdoc directive
 	 * @name portal
 	 */
-	function portalDirective($q, portalTemplate) {
+	function portalDirective() {
 		/* Auto-increment */
 		var portalId = 0;
 
 		return {
 			restrict: 'EA',
+			require: 'portal',
+			controller: 'portalController',
 			scope: {
 				areas: '=',
 				editing: '=',
@@ -23,7 +25,7 @@
 				onadd: '&',
 				onremove: '&'
 			},
-			template: portalTemplate,
+			templateUrl: 'portal-template.html',
 			compile: compile
 		}
 
@@ -32,17 +34,12 @@
 			return link;
 		}
 
-		function link(scope, element, attrs) {
+		function link(scope, element, attrs, controller) {
 			var id = ++portalId;
 			var areaClass = 'portal-' + id + '-area';
-			var areaSelector = '.' + areaClass;
-			scope.configure = configure;
-			scope.remove = remove;
-			scope.add = add;
 			scope.sortableClass = areaClass;
-			/* jQuery UI sortable options */
+			var areaSelector = '.' + areaClass;
 			scope.sortableOptions = {
-				'ui-floating': false,
 				cursor: 'move',
 				disabled: true,
 				scroll: true,
@@ -50,35 +47,22 @@
 				items: '>li',
 				tolerance: 'pointer',
 				placeholder: 'portal-placeholder',
+				forcePlaceholderSize: true,
+				revert: 200,
 				connectWith: areaSelector,
 				start: dragStart,
 				update: dragUpdate,
 				stop: dragStop
 			};
-			scope.$watch('editing', editingChanged);
+			scope.widgetParentScope = scope.$parent;
 
 			var changed = false;
 
+			scope.$watch('editing', editingChanged);
+
+			controller.init(element);
+
 			return;
-
-			/* Remove a widget */
-			function remove(area, widget) {
-				$q.when(scope.onremove({ area: area, widget: widget }))
-					.then(function doRemove() {
-						var index = area.widgets.indexOf(widget);
-						area.widgets.splice(index, 1);
-					});
-			}
-
-			/* Configure a widget */
-			function configure(widget) {
-				scope.onconfigure({ widget: widget });
-			}
-
-			/* Add widget */
-			function add(area) {
-				scope.onadd({ area: area });
-			}
 
 			/* Enable/disable editor */
 			function editingChanged(editing) {
@@ -106,7 +90,7 @@
 				var source = itemScope.$parent.area;
 				var target = areaScope.area;
 				/* Validate move */
-				if (scope.onmove({ widget: widget, source: source, target: target })) {
+				if (scope.validate(widget, source, target)) {
 					changed = true;
 				} else {
 					ui.item.sortable.cancel();
@@ -116,7 +100,7 @@
 			/* Trigger change event if needed */
 			function dragStop(event, ui) {
 				if (changed) {
-					scope.onchange({});
+					scope.changed();
 					changed = false;
 				}
 			}

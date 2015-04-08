@@ -1,55 +1,25 @@
 /* Demo CSS */
-body {
-	font-family: sans-serif;
-	font-size: 12pt;
-}
-h1 {
-	font-size: 18pt;
-}
-h2 {
-	font-size: 14pt;
-}
-input {
-	margin: 4px;
-}
-label {
-	font-size: 10pt;
-}
 .dialogs {
 	display: none;
 }
 .editor-control {
-	margin-bottom: 8px;
+	margin: 10px 0;
 }
 
 /* Begin styling portal */
-.portal {
-	display: flex;
-	flex-flow: row wrap;
-	align-items: flex-start;
-	justify-content: stretch;
-	padding: 10px;
+.widget-list {
+	margin: 10px;
 }
 .portal-area {
-	margin: 10px;
 	min-height: 40px;
-}
-.portal-area.header {
-	flex: 0 0 calc(100% - 20px);
-}
-.portal-area.main {
-	flex: 1 0 600px;
-}
-.portal-area.sidebar {
-	max-width: 200px;
-	flex: 0 1 200px;
+	padding: 0;
 }
 .widget-container,
 .portal-placeholder {
 	border-radius: 5px;
 	padding: 5px;
 	background: skyblue;
-	margin: 10px;
+	margin: 10px 0;
 }
 .portal-placeholder {
 	border: 2px dashed silver;

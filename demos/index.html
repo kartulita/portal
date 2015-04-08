@@ -6,6 +6,8 @@
 <base href="../">
 <link rel="stylesheet" href="bower_components/jquery-ui/themes/ui-lightness/jquery-ui.min.css">
 <link rel="stylesheet" href="bower_components/fontawesome/css/font-awesome.min.css">
+<!-- Bootstrap (required for demo) -->
+<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
 <script src="bower_components/jquery/dist/jquery.min.js"></script>
 <script src="bower_components/jquery-ui/jquery-ui.min.js"></script>
 <script src="bower_components/angular/angular.min.js"></script>
@@ -14,10 +16,11 @@
 <script src="../ajax-proxy/client.js"></script>
 <!-- Module -->
 <link rel="stylesheet" href="style.css">
+<script src="portal-template.html" type="text/ng-template"></script>
+<script src="widget-template.html" type="text/ng-template"></script>
 <script src="module.js"></script>
-<script src="portal-template.js"></script>
 <script src="portal-directive.js"></script>
-<script src="widget-template.js"></script>
+<script src="portal-controller.js"></script>
 <script src="widget-directive.js"></script>
 <!-- Demo css -->
 <link rel="stylesheet" href="demos/style.css">
@@ -35,27 +38,48 @@
 	function demoController($scope, confirmRemovalDialog, newItemDialog) {
 		$scope.areas = [
 			{
-				'class': 'header',
-				name: 'Header',
-				widgets: [
-					{ html: '<span>Title</span>' },
-					{ html: '<span>Actions logged here</span>' }
+				'class': 'row',
+				areas: [
+					{
+						'class': 'col-sm-12',
+						name: 'Header',
+						widgets: [
+							{ html: '<span>Title</span>' },
+							{ html: '<span>Actions logged here</span>' }
+						]
+					}
 				]
 			},
 			{
-				'class': 'main',
-				name: 'Main',
-				widgets: [
-					{ html: '<span>Hello</span>' }
+				'class': 'row',
+				areas: [
+					{
+						'class': 'col-md-10 col-sm-9',
+						name: 'Main',
+						widgets: [
+							{ html: '<span>Hello</span>' }
+						]
+					},
+					{
+						'class': 'col-md-2 col-sm-3',
+						name: 'Sidebar',
+						widgets: [
+							{ html: '<span>World</span>' },
+							{ html: '<i>Potato</i>' },
+							{ html: '<i>Another potato</i>' }
+						]
+					}
 				]
 			},
 			{
-				'class': 'sidebar',
-				name: 'Sidebar',
-				widgets: [
-					{ html: '<span>World</span>' },
-					{ html: '<i>Potato</i>' },
-					{ html: '<i>Another potato</i>' }
+				'class': 'row',
+				areas: [
+					{
+						'class': 'col-sm-12',
+						name: 'Footer',
+						widgets: [
+						]
+					}
 				]
 			}
 		];
@@ -65,7 +89,7 @@
 		$scope.removing = removing;
 		$scope.add = add;
 		$scope.configure = configure;
-		var log = $scope.areas[0].widgets[1];
+		var log = $scope.areas[0].areas[0].widgets[1];
 		return;
 
 		function moving(widget, source, target) {
@@ -196,36 +220,47 @@
 		</div>
 	</div>
 
-	<h1>Portal demo</h1>
+	<header class="container">
+		<h1>Portal demo</h1>
+	</header>
 
-	<div ng-controller="demo">
+	<main ng-controller="demo">
 
-		<h2>Simple editor</h2>
-		<div class="editor-control">
+		<section class="container">
+
+			<h2>Simple editor</h2>
+
 			<label>
 				<input type="checkbox" ng-model="editing" ng-true-value="true" ng-false-value="false">
 				<span>Allow editing</span>
 			</label>
-		</div>
 
-		<!-- Portal with editing capability -->
-		<div portal areas="areas"
-			editing="!!editing"
-			onmove="moving(widget, source, target)"
-			onchange="changed()"
-			onremove="removing(area, widget)"
-			onadd="add(area)"
-			onconfigure="configure(widget)"
-			>
-		</div>
+			<!-- Portal with editing capability -->
+			<div portal areas="areas"
+				editing="!!editing"
+				onmove="moving(widget, source, target)"
+				onchange="changed()"
+				onremove="removing(area, widget)"
+				onadd="add(area)"
+				onconfigure="configure(widget)"
+				class="container"
+				>
+			</div>
+
+		</section>
 
 		<hr>
-		<h2>Live data binding</h2>
 
-		<!-- Portal as clients would see -->
-		<div portal areas="areas"></div>
+		<section class="container">
 
-	</div>
+			<h2>Live data binding</h2>
+
+			<!-- Portal as clients would see -->
+			<div portal areas="areas" class="container"></div>
+
+		</section>
+
+	</main>
 
 </body>
 </html>

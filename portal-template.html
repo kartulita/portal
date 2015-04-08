@@ -1,0 +1,15 @@
+<div class="portal-area-group" ng-repeat="group in areas"
+	ng-class="group.class">
+	<div class="portal-area" ng-repeat="area in group.areas"
+		ng-class="area.class">
+		<div class="area-edit-buttons" ng-if="editing">
+			<button class="fa area-edit-button add" ng-click="add(area)">&#xf067;</button>
+			<span class="area-title" ng-bind="area.name"></span>
+		</div>
+		<ol ng-model="area.widgets" ui-sortable="sortableOptions" class="widget-list" ng-class="sortableClass">
+			<li ng-repeat="widget in area.widgets" widget="widget" editing="editing"
+				onremove="remove(area, widget)" onconfigure="configure(widget)">
+			</li>
+		</ol>
+	</div>
+</div>

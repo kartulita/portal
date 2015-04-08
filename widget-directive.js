@@ -8,7 +8,7 @@
 	 * @ngdoc directive
 	 * @name widget
 	 */
-	function widgetDirective($compile, widgetTemplate) {
+	function widgetDirective($compile) {
 		return {
 			restrict: 'A',
 			scope: {
@@ -17,7 +17,7 @@
 				'onconfigure': '&',
 				'onremove': '&'
 			},
-			template: widgetTemplate,
+			templateUrl: 'widget-template.html',
 			link: link
 		}
 
@@ -38,7 +38,7 @@
 
 			function widgetChanged(widget) {
 				var targetElement = element.find('.widget');
-				var widgetElement = $compile(widget.html)(scope.$new(true));
+				var widgetElement = $compile(widget.html)(scope.$parent.widgetParentScope);
 				targetElement
 					.empty()
 					.append(widgetElement);

@@ -1,4 +1,5 @@
 .portal {
+	overflow: hidden;
 }
 .portal.editing {
 	outline: 2px dashed blue;
@@ -14,8 +15,6 @@
 	padding: 0;
 	/* Ensure that empty lists are still drop-able */
 	min-height: 40px;
-	margin-top: -20px;
-	padding-top: 20px;
 }
 .widget-container {
 }
@@ -56,4 +55,7 @@
 	margin: 0;
 	display: inline-block;
 }
-
+.area-title {
+	font-size: 14px;
+	font-weight: bold;
+}
